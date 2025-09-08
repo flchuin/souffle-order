@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Minus, Plus, CheckCircle2, Loader2, Printer, QrCode, Trash2, Lock, Ticket, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
