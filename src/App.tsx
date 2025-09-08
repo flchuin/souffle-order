@@ -62,40 +62,14 @@ const LS_SEQ_KEY = "scan2order.seq.v1";
 function getAllOrders(): Order[] {
   try {
     const raw = localStorage.getItem(LS_ORDERS_KEY);
-    const arr = raw ? (JSON.parse(raw) as Order[]) : [];
-    return arr;
-  } catch {
-    return [];
-  }
-}
-function saveAllOrders(orders: Order[]) { localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(orders)); }
-function subscribeOrders(cb: (orders: Order[]) => void) {
-  const handler = () => cb(getAllOrders());
-  window.addEventListener("storage", handler);
-  return () => window.removeEventListener("storage", handler);
-}
-function nextQueueNumber(): string {
-  const year = new Date().getFullYear();
-  const raw = localStorage.getItem(LS_SEQ_KEY);
-  let { y, n } = raw ? JSON.parse(raw) as { y: number; n: number } : { y: year, n: 0 };
-  if (y !== year) { y = year; n = 0; }
-  n += 1;
-  localStorage.setItem(LS_SEQ_KEY, JSON.stringify({ y, n }));
-  return `Q-${String(n).padStart(3, "0")}`;
-}
-function getAllOrders(): Order[] {
-  try {
-    const raw = localStorage.getItem(LS_ORDERS_KEY);
     const arr = raw ? (JSON.parse(raw) as Array<Partial<Order>>) : [];
 
-    // Ensure status is one of the allowed literals
     const allowed = ["New", "Paid", "Preparing", "Ready", "Done", "Cancelled"] as const;
     type Status = typeof allowed[number];
 
     const normalizeStatus = (s: any): Status =>
       allowed.includes(s as Status) ? (s as Status) : "New";
 
-    // Map unknown -> Order with correct literal types
     return arr.map((o) => ({
       id: o.id ?? "",
       items: (o.items ?? []) as OrderItem[],
@@ -112,6 +86,7 @@ function getAllOrders(): Order[] {
     return [];
   }
 }
+
 /** App **/
 export default function App() {
   const url = new URL(window.location.href);
@@ -202,33 +177,45 @@ export default function App() {
   function clearCart() { setCart([]); }
 
   function submitOrder() {
-    if (cart.length === 0) return;
-    if (!pickupName.trim()) { alert("Please enter a pickup name."); return; }
-    setPlacing(true);
-    setTimeout(() => {
- const order: Order = {
-  id: nextQueueNumber(),
-  items: cart.map((c) => ({
-    sku: c.sku,
-    name: c.name,
-    unitPrice: c.unitPrice,
-    qty: c.qty,
-    addons: c.addons,
-  })),
-  total: parseFloat(subtotal.toFixed(2)),
-  status: "New" as Order["status"],         // 🔒 keep literal union
-  createdAt: Date.now(),
-  expiresAt: Date.now() + PAYMENT_WINDOW_MIN * 60 * 1000,
-  note: note || undefined,
-  pickupName: pickupName.trim(),
-  phone: phone.trim() || undefined,
-  marketingOptIn: marketing,
-};
+  if (cart.length === 0 || !pickupName.trim()) {
+    alert("Please fill details");
+    return;
+  }
+  setPlacing(true);
+  setTimeout(() => {
+    const order: Order = {
+      id: nextQueueNumber(),
+      items: cart.map((c) => ({
+        sku: c.sku,
+        name: c.name,
+        unitPrice: c.unitPrice,
+        qty: c.qty,
+        addons: c.addons,
+      })),
+      total: parseFloat(subtotal.toFixed(2)),
+      status: "New" as Order["status"],
+      createdAt: Date.now(),
+      expiresAt: Date.now() + PAYMENT_WINDOW_MIN * 60 * 1000,
+      note: note || undefined,
+      pickupName: pickupName.trim(),
+      phone: phone.trim() || undefined,
+      marketingOptIn: marketing,
+    };
 
-// Explicitly annotate the array as Order[]
-const next: Order[] = [order, ...getAllOrders()].slice(0, 300);
-saveAllOrders(next);
-setOrders(next);
+    const next: Order[] = [order, ...getAllOrders()].slice(0, 300);
+    saveAllOrders(next);
+    setOrders(next);
+
+    setPlaced(order);
+    setCart([]);
+    setNote("");
+    setPickupName("");
+    setPhone("");
+    setMarketing(true);
+    setPlacing(false);
+  }, 400);
+}
+
 
   // Routes
   if (isStaffMode) return (
