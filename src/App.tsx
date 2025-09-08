@@ -60,7 +60,13 @@ interface Order {
 const LS_ORDERS_KEY = "scan2order.orders.v2";
 const LS_SEQ_KEY = "scan2order.seq.v1";
 function getAllOrders(): Order[] {
-  try { return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || "[]"); } catch { return []; }
+  try {
+    const raw = localStorage.getItem(LS_ORDERS_KEY);
+    const arr = raw ? (JSON.parse(raw) as Order[]) : [];
+    return arr;
+  } catch {
+    return [];
+  }
 }
 function saveAllOrders(orders: Order[]) { localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(orders)); }
 function subscribeOrders(cb: (orders: Order[]) => void) {
@@ -182,9 +188,9 @@ export default function App() {
         note: note || undefined,
         pickupName: pickupName.trim(),
         phone: phone.trim() || undefined,
-        marketingOptIn: marketing,
+        marketingOptIn: marketing,		
       };
-      const next = [order, ...getAllOrders()].slice(0, 300);
+      const next: Order[] = [order, ...getAllOrders()].slice(0, 300);
       saveAllOrders(next);
       setOrders(next);
       setPlaced(order);
