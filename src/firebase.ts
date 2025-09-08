@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged,
+  type User,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,5 +21,9 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 export function ensureStaffSignedIn() {
-  onAuthStateChanged(auth, (u) => { if (!u) signInAnonymously(auth); });
+  onAuthStateChanged(auth, (u: User | null) => {
+    if (!u) {
+      signInAnonymously(auth).catch(() => {});
+    }
+  });
 }
