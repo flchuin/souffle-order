@@ -42,7 +42,6 @@ const FLAVORS: Flavor[] = [
 
 // ---- Helpers ----
 const fmt = (n: number) => `RM ${n.toFixed(2)}`;
-const uid = () => Math.random().toString(36).slice(2);
 const priceFor = (flavor: Flavor) => PRODUCT.basePrice + (flavor.priceDelta || 0);
 
 // Types
