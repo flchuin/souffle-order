@@ -179,17 +179,17 @@ export default function App() {
     setPlacing(true);
     setTimeout(() => {
       const order: Order = {
-        id: nextQueueNumber(),
-        items: cart.map((c) => ({ sku: c.sku, name: c.name, unitPrice: c.unitPrice, qty: c.qty, addons: c.addons })),
-        total: parseFloat(subtotal.toFixed(2)),
-        status: "New",
-        createdAt: Date.now(),
-        expiresAt: Date.now() + PAYMENT_WINDOW_MIN * 60 * 1000,
-        note: note || undefined,
-        pickupName: pickupName.trim(),
-        phone: phone.trim() || undefined,
-        marketingOptIn: marketing,		
-      };
+  id: nextQueueNumber(),
+  items: cart.map((c) => ({ sku: c.sku, name: c.name, unitPrice: c.unitPrice, qty: c.qty, addons: c.addons })),
+  total: parseFloat(subtotal.toFixed(2)),
+  status: "New" as Order["status"],        // <= ensure union literal, not string
+  createdAt: Date.now(),
+  expiresAt: Date.now() + PAYMENT_WINDOW_MIN * 60 * 1000,
+  note: note || undefined,
+  pickupName: pickupName.trim(),
+  phone: phone.trim() || undefined,
+  marketingOptIn: marketing,
+};
       const next: Order[] = [order, ...getAllOrders()].slice(0, 300);
       saveAllOrders(next);
       setOrders(next);
