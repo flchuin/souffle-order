@@ -29,13 +29,13 @@ const PRODUCT = {
 type Flavor = { id: string; name: string; priceDelta?: number; popular?: boolean };
 const FLAVORS: Flavor[] = [
   { id: "van", name: "Vanilla" },
-  { id: "cho", name: "Chocolate", popular: true },
+  { id: "cho", name: "Chocolate", priceDelta: 1.5, popular: true },
   { id: "mat", name: "Matcha", priceDelta: 1.5, popular: true },
-  { id: "str", name: "Strawberry" },
-  { id: "mng", name: "Mango" },
-  { id: "egl", name: "Earl Grey" },
+  { id: "str", name: "Strawberry", priceDelta: 1.5 },
+  { id: "mng", name: "Mango", priceDelta: 1.5 },
+  { id: "egl", name: "Earl Grey", priceDelta: 1.5 },
   { id: "hoj", name: "Hojicha", priceDelta: 1.5 },
-  { id: "blu", name: "Blueberry" },
+  { id: "blu", name: "Blueberry", priceDelta: 1.5 },
   { id: "bis", name: "Biscoff", priceDelta: 2.0 },
 ];
 
@@ -289,8 +289,8 @@ export default function App() {
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-neutral-900 text-white grid place-content-center font-bold">S2O</div>
           <div className="flex-1">
-            <h1 className="text-lg font-semibold leading-tight">Soufflé Pop-Up — Scan to Order</h1>
-            <p className="text-xs text-neutral-500">Single QR at Counter • Pay at Counter</p>
+            <h1 className="text-lg font-semibold leading-tight">Soufflé JigglyJeng — Scan to Order</h1>
+            <p className="text-xs text-neutral-500">Order Online • Pay at Counter</p>
           </div>
           <CartButton count={cart.reduce((s, i) => s + i.qty, 0)} subtotal={subtotal} onClear={clearCart} />
         </div>
@@ -424,7 +424,7 @@ export default function App() {
                       )}
                       {i.sku.startsWith(`${PRODUCT.id}-`) && (
                         <button onClick={() => addCheeseToSouffle(i.sku)} className="mt-2 px-2.5 py-1 rounded-lg border text-[12px] flex items-center gap-1">
-                          <PlusCircle className="w-3 h-3" /> Add Cheese {fmt(CHEESE.price)}
+                          <PlusCircle className="w-3 h-3" /> More Cheese Topping {fmt(CHEESE.price)}
                         </button>
                       )}
                     </div>
