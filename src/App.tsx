@@ -24,13 +24,13 @@ const PRODUCT = {
 type Flavor = { id: string; name: string; priceDelta?: number; popular?: boolean };
 const FLAVORS: Flavor[] = [
   { id: "van", name: "Vanilla" },
-  { id: "cho", name: "Chocolate", popular: true },
+  { id: "cho", name: "Chocolate", priceDelta: 1.5, popular: true },
   { id: "mat", name: "Matcha", priceDelta: 1.5, popular: true },
-  { id: "str", name: "Strawberry" },
-  { id: "mng", name: "Mango" },
-  { id: "egl", name: "Earl Grey" },
+  { id: "str", name: "Strawberry", priceDelta: 1.5 },
+  { id: "mng", name: "Mango", priceDelta: 1.5 },
+  { id: "egl", name: "Earl Grey", priceDelta: 1.5 },
   { id: "hoj", name: "Hojicha", priceDelta: 1.5 },
-  { id: "blu", name: "Blueberry" },
+  { id: "blu", name: "Blueberry", priceDelta: 1.5 },
   { id: "bis", name: "Biscoff", priceDelta: 2.0 },
 ];
 
@@ -299,8 +299,8 @@ export default function App() {
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-neutral-900 text-white grid place-content-center font-bold">S2O</div>
           <div className="flex-1">
-            <h1 className="text-lg font-semibold leading-tight">Soufflé Pop-Up — Scan to Order</h1>
-            <p className="text-xs text-neutral-500">Single QR at Counter • Pay at Counter</p>
+            <h1 className="text-lg font-semibold leading-tight">Soufflé JigglyJeng — Scan to Order</h1>
+            <p className="text-xs text-neutral-500">Order Online • Pay at Counter</p>
           </div>
           <CartButton count={cart.reduce((s, i) => s + i.qty, 0)} subtotal={subtotal} onClear={clearCart} />
         </div>
@@ -310,7 +310,7 @@ export default function App() {
       <div className="bg-neutral-900 text-white">
         <div className="max-w-5xl mx-auto px-4 py-2 text-sm flex items-center gap-2">
           <Ticket className="w-4 h-4" />
-          <span>Event Mode: Orders are queued. Please pay at the counter after placing your order.</span>
+          <span>Order Mode: Orders are queued. Please pay at the counter after placing your order.</span>
         </div>
       </div>
 
@@ -461,7 +461,7 @@ export default function App() {
                           onClick={() => addCheeseToSouffle(i.sku)}
                           className="mt-2 px-2.5 py-1 rounded-lg border text-[12px] flex items-center gap-1"
                         >
-                          <PlusCircle className="w-3 h-3" /> Add Cheese {fmt(CHEESE.price)}
+                          <PlusCircle className="w-3 h-3" /> More Cheese Topping {fmt(CHEESE.price)}
                         </button>
                       )}
                     </div>
@@ -755,7 +755,7 @@ function StaffBoard({
             <h2 className="font-semibold">Staff Login</h2>
           </div>
           <p className="text-sm text-neutral-600 mt-1">
-            Enter PIN to view orders. (Demo PIN: <span className="font-mono">1234</span>)
+            Enter PIN to view orders.
           </p>
           <input
             value={pin}
@@ -764,7 +764,7 @@ function StaffBoard({
             className="mt-3 w-full border rounded-xl p-3 text-sm"
           />
           <button
-            onClick={() => setAuthed(pin === "1234")}
+            onClick={() => setAuthed(pin === "0625")}
             className="mt-3 w-full px-4 py-2 rounded-xl bg-neutral-900 text-white text-sm"
           >
             Enter
@@ -797,7 +797,7 @@ function StaffBoard({
             <div className="text-sm font-semibold flex items-center gap-2">
               <QrCode className="w-4 h-4" /> Centralized QR
             </div>
-            <p className="text-xs text-neutral-600">Print this and place at the counter for guests to scan.</p>
+            <p className="text-xs text-neutral-600">Print this and place at the counter for customers to scan.</p>
           </div>
           <div className="ml-auto text-center">
             <QRCodeSVG value={siteUrl} size={100} />
